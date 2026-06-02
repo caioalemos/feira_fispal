@@ -5,114 +5,107 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pesquisa Cliente Oculto — Fispal 2026</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2e3350;
-    --accent: #4f6ef7;
-    --text: #e8eaf6;
-    --muted: #8892b0;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+  :root { --bg:#0f1117; --surface:#1a1d27; --surface2:#22263a; --border:#2e3350; --accent:#4f6ef7; --text:#e8eaf6; --muted:#8892b0; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.6;}
 
-  .header { background: linear-gradient(135deg, #0f1117, #1a1d27, #12162b); border-bottom: 1px solid var(--border); padding: 36px 48px 28px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
-  .header-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  .header h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.5px; }
-  .header h1 span { color: var(--accent); }
-  .header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .badge { background: rgba(79,110,247,0.12); border: 1px solid rgba(79,110,247,0.25); color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  /* HEADER */
+  .header{background:linear-gradient(135deg,#0f1117,#1a1d27,#12162b);border-bottom:1px solid var(--border);padding:36px 48px 28px;}
+  .header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .header h1{font-size:21px;font-weight:700;letter-spacing:-.5px;}
+  .header h1 span{color:var(--accent);}
+  .header p{color:var(--muted);font-size:13px;margin-top:4px;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .badge{background:rgba(79,110,247,.12);border:1px solid rgba(79,110,247,.25);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;}
 
-  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 11px 48px; position: sticky; top: 96px; z-index: 99; }
-  .filter-inner { max-width: 1400px; margin: 0 auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .filter-label { color: var(--muted); font-size: 12px; font-weight: 500; margin-right: 4px; }
-  .filter-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 5px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all .15s; }
-  .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .search-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 5px 14px; border-radius: 20px; font-size: 12px; outline: none; margin-left: auto; width: 200px; }
-  .search-input::placeholder { color: var(--muted); }
-  .search-input:focus { border-color: var(--accent); }
+  /* FILTER BAR */
+  .filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 48px;position:sticky;top:0;z-index:100;}
+  .filter-inner{max-width:1400px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .filter-label{color:var(--muted);font-size:12px;font-weight:500;margin-right:4px;}
+  .filter-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .15s;}
+  .filter-btn:hover,.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 
-  .summary-panel { max-width: 1400px; margin: 32px auto 0; padding: 0 48px; display: flex; flex-direction: column; gap: 16px; }
-  .summary-body { display: flex; flex-direction: column; gap: 16px; }
-  .summ-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-  .summ-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
-  .summ-card.accent { border-color: rgba(79,110,247,.35); background: linear-gradient(135deg, rgba(79,110,247,.08), rgba(124,58,237,.05)); }
-  .summ-card.warn { border-color: rgba(239,68,68,.3); background: rgba(239,68,68,.04); }
-  .summ-card.ok { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.04); }
-  .summ-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .summ-text { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .summ-text strong { color: #c4ceff; }
-  .boiler-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; }
-  .boiler-title { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
-  .boiler-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-  .boiler-item { background: var(--surface2); border-radius: 8px; padding: 12px 14px; }
-  .boiler-co { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .boiler-quote { font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.55; }
-  .perc-row { display: flex; flex-wrap: wrap; gap: 8px; }
-  .perc-item { display: flex; align-items: flex-start; gap: 8px; background: var(--surface2); border-radius: 8px; padding: 10px 12px; flex: 1 1 240px; }
-  .perc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-  .perc-dot.neg { background: #ef4444; }
-  .perc-dot.neu { background: var(--muted); }
-  .perc-dot.pos { background: #10b981; }
-  .perc-info { display: flex; flex-direction: column; gap: 2px; }
-  .perc-co { font-size: 12px; font-weight: 700; color: var(--text); }
-  .perc-msg { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  /* RESUMO */
+  .summary-panel{max-width:1400px;margin:32px auto 0;padding:0 48px;display:flex;flex-direction:column;gap:16px;}
+  .summary-body{display:flex;flex-direction:column;gap:16px;}
+  .summ-section-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+  .summ-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+  .summ-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .summ-card.accent{border-color:rgba(79,110,247,.35);background:linear-gradient(135deg,rgba(79,110,247,.08),rgba(124,58,237,.05));}
+  .summ-card.warn{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.04);}
+  .summ-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .summ-text{font-size:13px;color:var(--text);line-height:1.6;}
+  .summ-text strong{color:#c4ceff;}
+  .boiler-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;}
+  .boiler-title{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  .boiler-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
+  .boiler-item{background:var(--surface2);border-radius:8px;padding:12px 14px;}
+  .boiler-co{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .boiler-quote{font-size:12px;color:var(--muted);font-style:italic;line-height:1.55;}
+  .perc-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .perc-item{display:flex;align-items:flex-start;gap:8px;background:var(--surface2);border-radius:8px;padding:10px 12px;flex:1 1 240px;}
+  .perc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+  .perc-dot.neg{background:#ef4444;} .perc-dot.neu{background:var(--muted);} .perc-dot.pos{background:#10b981;}
+  .perc-info{display:flex;flex-direction:column;gap:2px;}
+  .perc-co{font-size:12px;font-weight:700;color:var(--text);}
+  .perc-msg{font-size:11.5px;color:var(--muted);line-height:1.5;}
 
-  .grid { max-width: 1400px; margin: 0 auto; padding: 32px 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 20px; }
-  .section-header { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 8px 0 4px; margin-top: 12px; }
-  .section-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-  .section-line { flex: 1; height: 1px; background: var(--border); }
-  .section-count { font-size: 11px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  /* GRID */
+  .grid{max-width:1400px;margin:0 auto;padding:32px 48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px;}
+  .section-divider{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:8px 0 4px;margin-top:12px;}
+  .section-divider:first-child{margin-top:0;}
+  .section-divider .sd-title{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .section-divider .sd-line{flex:1;height:1px;background:var(--border);}
+  .section-divider .sd-count{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;white-space:nowrap;}
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: transform .15s, box-shadow .15s; }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-  .card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .card-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-  .cat-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; }
-  .cat-forno     { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.25); }
-  .cat-gelo      { background: rgba(6,182,212,.15);  color: #22d3ee; border: 1px solid rgba(6,182,212,.25); }
-  .cat-sorvete   { background: rgba(168,85,247,.15); color: #c084fc; border: 1px solid rgba(168,85,247,.25); }
-  .cat-fritadeira{ background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
-  .cat-seladora  { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
-  .cat-suco      { background: rgba(251,146,60,.15); color: #fb923c; border: 1px solid rgba(251,146,60,.25); }
-  .cat-lavalouca { background: rgba(99,102,241,.15); color: #818cf8; border: 1px solid rgba(99,102,241,.25); }
+  /* CARDS */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .15s,box-shadow .15s;}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+  .card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .card-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+  .cat-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;white-space:nowrap;flex-shrink:0;}
+  .cat-forno    {background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.25);}
+  .cat-gelo     {background:rgba(6,182,212,.15);  color:#22d3ee; border:1px solid rgba(6,182,212,.25);}
+  .cat-sorvete  {background:rgba(168,85,247,.15); color:#c084fc; border:1px solid rgba(168,85,247,.25);}
+  .cat-fritadeira{background:rgba(245,158,11,.15);color:#fbbf24; border:1px solid rgba(245,158,11,.25);}
+  .cat-seladora {background:rgba(16,185,129,.15); color:#34d399; border:1px solid rgba(16,185,129,.25);}
+  .cat-suco     {background:rgba(251,146,60,.15); color:#fb923c; border:1px solid rgba(251,146,60,.25);}
+  .cat-lavalouca{background:rgba(99,102,241,.15); color:#818cf8; border:1px solid rgba(99,102,241,.25);}
 
-  .value-prop { margin: 0 24px; padding: 12px 16px; background: linear-gradient(135deg, rgba(79,110,247,.1), rgba(124,58,237,.08)); border: 1px solid rgba(79,110,247,.2); border-radius: 10px; margin-top: 16px; }
-  .value-prop-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
-  .value-prop-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .value-prop{margin:0 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(79,110,247,.1),rgba(124,58,237,.08));border:1px solid rgba(79,110,247,.2);border-radius:10px;margin-top:16px;}
+  .value-prop-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+  .value-prop-text{font-size:13px;color:var(--text);line-height:1.5;}
 
-  .fields { padding: 16px 24px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .field { background: var(--surface2); border-radius: 10px; padding: 12px 14px; }
-  .field.full { grid-column: 1 / -1; }
-  .field-icon { font-size: 16px; margin-bottom: 4px; }
-  .field-label { font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-  .field-value { font-size: 12.5px; color: var(--text); line-height: 1.5; }
-  .field-value.missing { color: var(--muted); font-style: italic; }
+  .fields{padding:16px 24px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .field{background:var(--surface2);border-radius:10px;padding:12px 14px;}
+  .field.full{grid-column:1/-1;}
+  .field-icon{font-size:16px;margin-bottom:4px;}
+  .field-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .field-value{font-size:12.5px;color:var(--text);line-height:1.5;}
+  .field-value.missing{color:var(--muted);font-style:italic;}
 
-  .blips-section { margin: 0 24px 20px; }
-  .blips-header { font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .blips-header::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: #4f6ef7; }
-  .blips-chip { display: inline-flex; align-items: center; font-size: 12px; padding: 5px 11px; border-radius: 8px; }
-  .blips-positive { background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.25); color: #34d399; }
-  .blips-negative { background: rgba(239,68,68,.1);  border: 1px solid rgba(239,68,68,.25);  color: #f87171; }
-  .blips-neutral  { background: rgba(148,163,184,.1); border: 1px solid rgba(148,163,184,.2); color: var(--muted); }
-  .blips-text { font-size: 12px; color: var(--text); line-height: 1.55; margin-top: 8px; font-style: italic; }
-  .blips-source { font-size: 11px; color: var(--muted); margin-top: 4px; font-style: normal; }
+  .blips-section{margin:0 24px 20px;}
+  .blips-header{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .blips-header::before{content:'';display:block;width:6px;height:6px;border-radius:50%;background:#4f6ef7;}
+  .blips-chip{display:inline-flex;align-items:center;font-size:12px;padding:5px 11px;border-radius:8px;}
+  .blips-positive{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#34d399;}
+  .blips-negative{background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.25); color:#f87171;}
+  .blips-neutral {background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2);color:var(--muted);}
+  .blips-text{font-size:12px;color:var(--text);line-height:1.55;margin-top:8px;font-style:italic;}
+  .blips-source{font-size:11px;color:var(--muted);margin-top:4px;font-style:normal;}
 
-  .pill        { display: inline-block; background: rgba(79,110,247,.1); border: 1px solid rgba(79,110,247,.2); color: #93c5fd; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; margin-right: 4px; margin-top: 2px; }
-  .pill-green  { background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.25); color: #34d399; }
-  .pill-yellow { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.25); color: #fbbf24; }
-  .pill-red    { background: rgba(239,68,68,.1);  border-color: rgba(239,68,68,.2);  color: #f87171; }
+  .pill       {display:inline-block;background:rgba(79,110,247,.1);border:1px solid rgba(79,110,247,.2);color:#93c5fd;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;margin-right:4px;margin-top:2px;}
+  .pill-green {background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25);color:#34d399;}
+  .pill-yellow{background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.25);color:#fbbf24;}
+  .pill-red   {background:rgba(239,68,68,.1);  border-color:rgba(239,68,68,.2); color:#f87171;}
 
-  .empty { grid-column: 1/-1; text-align: center; padding: 80px 0; color: var(--muted); }
+  .empty{grid-column:1/-1;text-align:center;padding:80px 0;color:var(--muted);}
 
-  @media (max-width: 900px) {
-    .header, .filter-bar, .summary-panel { padding-left: 20px; padding-right: 20px; }
-    .grid { padding: 20px; grid-template-columns: 1fr; }
-    .fields { grid-template-columns: 1fr; }
-    .field.full { grid-column: 1; }
+  @media(max-width:900px){
+    .header,.filter-bar,.summary-panel{padding-left:20px;padding-right:20px;}
+    .grid{padding:20px;grid-template-columns:1fr;}
+    .fields{grid-template-columns:1fr;}
+    .field.full{grid-column:1;}
   }
 </style>
 </head>
@@ -122,10 +115,9 @@
   <div class="header-inner">
     <div>
       <h1>Pesquisa Cliente Oculto — <span>Fispal 2026</span></h1>
-      <p>São Paulo · 20 empresas pesquisadas · Funcionamento · Elétrica · Preço · Pagamento · Garantia · Percepção Blips</p>
+      <p>São Paulo · empresas pesquisadas · Funcionamento · Elétrica · Preço · Pagamento · Garantia · Percepção Blips</p>
     </div>
     <div class="badge-row">
-      <span class="badge">20 Empresas</span>
       <span class="badge">Fispal 2026</span>
       <span class="badge">Blips — Inteligência Competitiva</span>
     </div>
@@ -135,126 +127,209 @@
 <div class="filter-bar">
   <div class="filter-inner">
     <span class="filter-label">Categoria:</span>
-    <button class="filter-btn active" data-filter="all">Todos</button>
-    <button class="filter-btn" data-filter="forno">Fornos</button>
-    <button class="filter-btn" data-filter="gelo">Gelo</button>
-    <button class="filter-btn" data-filter="sorvete">Sorvete</button>
-    <button class="filter-btn" data-filter="fritadeira">Fritadeiras</button>
-    <button class="filter-btn" data-filter="seladora">Seladoras</button>
-    <button class="filter-btn" data-filter="suco">Suco</button>
-    <button class="filter-btn" data-filter="lavalouca">Lava-louças</button>
-    <input class="search-input" type="text" placeholder="Buscar empresa..." id="search" />
+    <button class="filter-btn active" data-cat="all">Todos</button>
+    <button class="filter-btn" data-cat="forno">Fornos</button>
+    <button class="filter-btn" data-cat="gelo">Gelo</button>
+    <button class="filter-btn" data-cat="sorvete">Sorvete</button>
+    <button class="filter-btn" data-cat="fritadeira">Fritadeiras</button>
+    <button class="filter-btn" data-cat="seladora">Seladoras</button>
+    <button class="filter-btn" data-cat="suco">Suco</button>
+    <button class="filter-btn" data-cat="lavalouca">Lava-louças</button>
   </div>
 </div>
 
+<!-- RESUMO EXECUTIVO -->
 <div class="summary-panel">
-  <div class="summ-label" style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px;">Resumo Executivo da Pesquisa</div>
-  <div class="summary-body" id="summ-body">
+  <div class="summ-section-title">Resumo Executivo da Pesquisa</div>
+  <div class="summary-body">
     <div class="summ-row">
       <div class="summ-card accent">
-        <div class="summ-label">&#x1F4B3; Maior diferencial Blips</div>
+        <div class="summ-label">💳 Maior diferencial Blips</div>
         <div class="summ-text">Financiamento próprio sem consulta SPC/Serasa (apenas CNPJ ativo). <strong>Nenhum concorrente visitado oferece condição equivalente.</strong></div>
       </div>
       <div class="summ-card warn">
-        <div class="summ-label">&#x26A0;&#xFE0F; Vulnerabilidade principal</div>
-        <div class="summ-text">Origem questionada por concorrentes: R Baião chamou de "importada", Prática questionou se é fábrica, Zummo afirmou ser cópia da antiga Citros. <strong>A percepção de que a Blips não é fábrica</strong> é usada ativamente como argumento pelos concorrentes. A Logrosoft reforça ainda que a Blips é uma <strong>marca nova e generalista demais</strong> — "quer abraçar tudo e não vai" — citando que nenhuma franquia usa os equipamentos deles.</div>
+        <div class="summ-label">⚠️ Vulnerabilidade principal</div>
+        <div class="summ-text">Origem questionada: R Baião chamou de "importada", Prática questionou se é fábrica, Zummo afirmou ser cópia da antiga Citros. <strong>A percepção de que a Blips não é fábrica</strong> é usada ativamente pelos concorrentes. A Logrosoft reforça que a Blips é uma <strong>marca nova e generalista demais</strong> — "quer abraçar tudo e não vai" — citando que nenhuma franquia usa os equipamentos deles.</div>
       </div>
     </div>
 
     <div class="summ-card">
-      <div class="summ-label">&#x1F5E3;&#xFE0F; O que os concorrentes disseram sobre a Blips</div>
+      <div class="summ-label">🗣️ O que os concorrentes disseram sobre a Blips</div>
       <div class="perc-row" style="margin-top:10px">
         <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">Zummo</span><span class="perc-msg">Dirigiu ao Reclame Aqui. Acusou de cópia do EVS. Criticou material plástico. "A Blips é a antiga Citros."</span></div></div>
         <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">R Baião</span><span class="perc-msg">"São também máquinas importadas. Fabricação 100% nacional só RBA."</span></div></div>
         <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">Rational</span><span class="perc-msg">"Se quiser o melhor do mercado é esse forno aqui, se quiser o custo benefício vai na Prática, eu não disputo preço com eles."</span></div></div>
-        <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">Logrosoft</span><span class="perc-msg">"Quer abraçar tudo e não vai." Critica estratégia generalista. Cita que franquias (Jah) usam a deles.</span></div></div>
+        <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">Logrosoft</span><span class="perc-msg">"Quer abraçar tudo e não vai." Cita que franquias (Jah) usam a deles.</span></div></div>
         <div class="perc-item"><div class="perc-dot neg"></div><div class="perc-info"><span class="perc-co">Prix (Toledo)</span><span class="perc-msg">"É concorrente nosso. Faz parte."</span></div></div>
         <div class="perc-item"><div class="perc-dot neu"></div><div class="perc-info"><span class="perc-co">J Jac / Vulcan / Venâncio / Prática</span><span class="perc-msg">Desconhecimento total ou apenas registraram o preço sem comentar.</span></div></div>
       </div>
     </div>
 
     <div class="boiler-box">
-      <div class="boiler-title">&#x1F525; O Debate do Boiler — o que os fabricantes de forno combinado disseram</div>
+      <div class="boiler-title">🔥 O Debate do Boiler — o que os fabricantes de forno combinado disseram</div>
       <div class="summ-text" style="margin-bottom:14px;font-size:13px;color:var(--muted)">Clientes chegavam tendo ouvido que "forno bom é o que tem boiler" — mas todos os fabricantes visitados posicionaram o boiler como desvantagem técnica.</div>
       <div class="boiler-grid">
-        <div class="boiler-item"><div class="boiler-co">Prática</div><div class="boiler-quote">"A gente tinha boiler. Eliminou o boiler. Foi pro outro sistema." O boiler acumula calcário. A Prática patenteou um sistema próprio que vaporiza a água diretamente.</div></div>
+        <div class="boiler-item"><div class="boiler-co">Prática</div><div class="boiler-quote">"A gente tinha boiler. Eliminou o boiler. Foi pro outro sistema." O boiler acumula calcário. A Prática patenteou sistema próprio que vaporiza a água diretamente.</div></div>
         <div class="boiler-item"><div class="boiler-co">Venâncio</div><div class="boiler-quote">"Não faz sentido. Não faz mesmo." — resposta direta ao cliente que perguntou se o forno tinha boiler como diferencial.</div></div>
-        <div class="boiler-item"><div class="boiler-co">Wictory (Victory)</div><div class="boiler-quote">"O boiler, eu não sinto necessidade. Ele não tem integrado. A água que vai entrar já entra vaporizada. O forno está a 200°C — água ferve a 100. Não tem necessidade." Confirmado pelo gerente no estande.</div></div>
-        <div class="boiler-item"><div class="boiler-co">Rational</div><div class="boiler-quote">O cliente chegou citando que "o bom é o que tem boiler". O representante da Rational não defendeu o boiler — indicou controle via sonda como diferencial, não boiler.</div></div>
-        <div class="boiler-item"><div class="boiler-co">Blips</div><div class="boiler-quote">O representante mencionou boiler de forma confusa: "Boiler acredito que ela tenha por ser toda em inox e por ser totalmente digital." — Fala imprecisa que pode gerar confusão, dado que todos os concorrentes posicionam o boiler como algo a ser eliminado.</div></div>
+        <div class="boiler-item"><div class="boiler-co">Wictory (Victory)</div><div class="boiler-quote">"O boiler, eu não sinto necessidade. A água que vai entrar já entra vaporizada. O forno está a 200°C — água ferve a 100. Não tem necessidade." Confirmado pelo gerente no estande.</div></div>
+        <div class="boiler-item"><div class="boiler-co">Rational</div><div class="boiler-quote">O cliente chegou citando que "o bom é o que tem boiler". O representante não defendeu o boiler — indicou controle via sonda como diferencial, não boiler.</div></div>
+        <div class="boiler-item"><div class="boiler-co">Blips</div><div class="boiler-quote">O representante mencionou boiler de forma confusa: "Boiler acredito que ela tenha por ser toda em inox e por ser totalmente digital." — Fala imprecisa, dado que todos os concorrentes posicionam o boiler como algo a ser eliminado.</div></div>
       </div>
-      <div class="summ-text" style="margin-top:14px;font-size:12.5px;color:var(--muted)"><strong style="color:#c4ceff">Conclusão:</strong> existe uma narrativa no mercado de que boiler é sinônimo de qualidade. Todos os fabricantes visitados contradizem isso. A Blips precisa ter um discurso claro sobre o tema.</div>
+      <div class="summ-text" style="margin-top:14px;font-size:12.5px;color:var(--muted)"><strong style="color:#c4ceff">Conclusão:</strong> Existe uma narrativa no mercado de que boiler é sinônimo de qualidade. Todos os fabricantes visitados contradizem isso. A Blips precisa ter um discurso claro e consistente sobre o tema.</div>
     </div>
   </div>
 </div>
 
+<!-- GRID -->
 <div class="grid" id="grid">
 
-<!-- BLIPS -->
+<!-- ═══ FORNOS ═══ -->
+<div class="section-divider" data-sec="forno"><span class="sd-title">🍕 Fornos Combinados &amp; Pizza</span><div class="sd-line"></div><span class="sd-count" id="cnt-forno"></span></div>
+
 <div class="card" data-cat="forno" data-name="blips">
   <div class="card-header"><div class="card-title">Blips</div><span class="cat-tag cat-forno">Forno Combinado</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Enquanto lá você compra um equipamento em torno de 100.000, aqui você tá comprando por 60, 58. Esses 40.000 que você tá tendo a menos é 40.000 a mais que você tá investindo na sua empresa." — preço acessível para microempreendedor crescer, com financiamento próprio sem consulta ao SPC/Serasa.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Enquanto lá você compra um equipamento em torno de 100.000, aqui você tá comprando por 60, 58. Esses 40.000 que você tá tendo a menos é 40.000 a mais que você tá investindo na sua empresa." — preço acessível para microempreendedor crescer, com financiamento próprio sem consulta ao SPC/Serasa.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado de 6 e 10 bandejas. Totalmente digital com pré-receitas; receitas customizadas via aplicativo conectado à internet ("tem um neurônio de inteligência"). Termômetro de núcleo para controle de temperatura de carnes. Autolimpeza automática. Parceria tecnológica com empresa chinesa "Vuze". Também apresentou o "Speed Oven": forno para lanches (dourar pão, derreter queijo e aquecer carne pré-assada em 30-40 segundos).</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V</span><br/>Rep. disse: "Ela é trifásico. Bifásico." — resposta contraditória.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 58.616</span> (10 bandejas)<br/>6 bandejas: valor menor, não especificado.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão · Boleto: entrada R$ 8.000 + até 36x pela financeira própria · Não consulta SPC/Serasa — verifica apenas se CNPJ está ativo.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value missing">Não mencionadas nesta visita.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado de 6 e 10 bandejas. Totalmente digital com pré-receitas; receitas customizadas via aplicativo conectado à internet ("tem um neurônio de inteligência"). Termômetro de núcleo para controle de temperatura de carnes. Autolimpeza automática. Parceria tecnológica com empresa chinesa "Vuze". Também apresentou o "Speed Oven": forno para lanches (dourar pão, derreter queijo e aquecer carne pré-assada em 30-40 segundos).</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V</span><br/>Rep. disse: "Ela é trifásico. Bifásico." — resposta contraditória.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 58.616</span> (10 bandejas)<br/>6 bandejas: valor menor, não especificado.</div></div>
+    <div class="field full"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão · Boleto: entrada R$ 8.000 + até 36x pela financeira própria · Não consulta SPC/Serasa — verifica apenas se CNPJ está ativo.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value missing">Não mencionadas nesta visita.</div></div>
   </div>
 </div>
 
-<!-- EASY ICE -->
-<div class="card" data-cat="gelo" data-name="easy ice">
-  <div class="card-header"><div class="card-title">Easy Ice</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Aluguel não quer se preocupar com manutenção preventiva, corretiva, nada disso." Custo de 65 centavos/kg produzido vs R$ 6 no saco de 5 kg comprado fora.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Modelo IM65: 55 kg/24h, recomendado 20-40 kg de uso. Gelo em cubo quadrado (derrete mais lento). Depósito com sensor — ao retirar gelo, retoma produção em 30 min (1 ciclo). Modelo menor disponível. Requer ponto de água e dreno no piso ou até 10 cm na parede, por gravidade.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V Monofásico</span><br/>Tomada de 20A. Não precisa de trifásico.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill">Aluguel R$ 689/mês</span> (36 meses)<br/>Modelo menor: R$ 570/mês<br/><span class="pill pill-yellow">Compra: R$ 17-19k</span></div></div>
-    <div class="field full"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Locação mínimo 12 meses (manutenção inclusa). Se der problema empresa resolve e cliente compra gelo fora e manda nota para reembolso. Compra à vista.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">3 anos</span> (compra — Macon/OXAC). Rep. alertou sobre dificuldade real com peças: "Eu mandei um vídeo para ele dia 29 de abril. Desesperado por conta de peça."</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
-</div>
-
-<!-- EVEREST -->
-<div class="card" data-cat="gelo" data-name="everest">
-  <div class="card-header"><div class="card-title">Everest</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Durabilidade comprovada pelo próprio representante: "Eu tenho um já faz 14 [anos]." Produto robusto com preço competitivo na feira + frete grátis.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">50 kg/24h. Depósito interno de 6 kg — para quando enche, volta a produzir conforme o gelo é retirado. Recomendado ligar 2h antes do expediente. Gelo dura 24h no depósito.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 7.990</span> à vista (feira)<br/><span class="pill pill-yellow">R$ 880 x 10</span> no cartão<br/>Fora da feira: R$ 9.990</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Máximo 10x no cartão. Frete grátis para qualquer estado fechando até o dia seguinte.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">6 meses</span> normal · <span class="pill pill-green">1 ano</span> na feira. AT em todos os estados, confirmou Uberlândia.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
-</div>
-
-<!-- J JAC -->
 <div class="card" data-cat="forno" data-name="j jac">
   <div class="card-header"><div class="card-title">J Jac</div><span class="cat-tag cat-forno">Forno de Pizza (Esteira)</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Qualidade construtiva superior: totalmente soldado, sem rebites ("para evitar que caia um rebite numa pizza"), isolamento quase três vezes maior que fornos nacionais. Menos calor perdido = menos gasto com energia e ambiente mais agradável para funcionários.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Qualidade construtiva superior: totalmente soldado, sem rebites ("para evitar que caia um rebite numa pizza"), isolamento quase três vezes maior que fornos nacionais.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Esteira transportadora. Modelos: 20, 30, 60 (1,10m) e 80 pizzas/hora (1,80m com esteira alongada). Dois motores e duas turbinas que jogam ar quente por cima e por baixo da esteira. Totalmente soldado, sem rebites. Disponível 100% elétrico ou gás com comandos elétricos. Carrinho em inox para limpeza fácil. 27 anos no mercado, fábrica em Guarulhos. Sem pronta entrega — 60 dias.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">220V Trifásico</span><br/>"Se você tiver trifásico lá, melhor o 380."</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 2.500</span> (modelo menor citado)<br/>Entrega em 60 dias.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x sem juros (feira) · À vista antecipada: 8% desconto · 50% sinal + entrega: 5% · Cartão à vista: 3% · Boleto: 50% sinal + até 6x</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value">Técnico em Uberlândia e São José do Rio Preto. "É difícil o forno dar problema. Eu tenho forno no Japão e a gente não tem técnica lá."</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Esteira transportadora. Modelos: 20, 30, 60 (1,10m) e 80 pizzas/hora (1,80m com esteira alongada). Dois motores e duas turbinas que jogam ar quente por cima e por baixo da esteira. Totalmente soldado, sem rebites. Disponível 100% elétrico ou gás com comandos elétricos. Carrinho em inox. 27 anos no mercado, fábrica em Guarulhos. Sem pronta entrega — 60 dias.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">220V Trifásico</span><br/>"Se você tiver trifásico lá, melhor o 380."</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 2.500</span> (modelo menor). Entrega em 60 dias.</div></div>
+    <div class="field full"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x sem juros (feira) · À vista antecipada: 8% desconto · 50% sinal + entrega: 5% · Cartão à vista: 3% · Boleto: 50% sinal + até 6x</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value">Técnico em Uberlândia e São José do Rio Preto. "É difícil o forno dar problema. Eu tenho forno no Japão e a gente não tem técnica lá."</div></div>
   </div>
   <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Desconhecimento total</span><div class="blips-text">"Blips eu não conheço. É nacional?"</div><div class="blips-source">— Representante J Jac</div></div>
 </div>
 
-<!-- LOGROSOFT -->
+<div class="card" data-cat="forno" data-name="pietro">
+  <div class="card-header"><div class="card-title">Pietro</div><span class="cat-tag cat-forno">Forno de Pizza (Câmara)</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Dois anos de garantia, manutenção de 2 a 12 horas nível Brasil, sábado, domingo, feriado." 50 pizzas/hora. Fabricação nacional com técnico enviado para instalação.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Forno de câmara (não esteira), modelo 37/70: pizzas até 35 cm, 50 pizzas/hora. Convecção a ar. Não tem forno combinado. Fabricação nacional. Instalação por técnico enviado pela empresa.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V Bifásico</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 22.000</span> à vista · <span class="pill pill-yellow">R$ 25.000</span> em 10x</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão · Menz · Banco do Nordeste · Carta de crédito · Sem financiamento interno.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span>. Manutenção 2-12h nacional (sáb, dom, feriados).</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Conhecimento superficial</span><div class="blips-text">"É uma empresa nacional né? Não conheço."</div><div class="blips-source">— Representante Pietro</div></div>
+</div>
+
+<div class="card" data-cat="forno" data-name="prática pratica">
+  <div class="card-header"><div class="card-title">Prática</div><span class="cat-tag cat-forno">Forno Combinado + Pizza</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Se você der uma pesquisada, falar com bastante gente, vai ter unanimidade: Prática." Sem boiler (sem calcificação), higienização automática, filtro catalítico (sem fumaça próximo ao salão), maior rede de AT nacional.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Pizza câmara: 1,5 min (pré-assada) ou 3 min (massa crua). Dois fornos empilhados. Filtro catalítico — sem fumaça, pode ficar próximo ao salão. Forno combinado sem boiler (tecnologia patenteada): água entra vaporizada diretamente, sem acúmulo de calcário. Funções: vapor, cocção, banho-maria, regeneração, resfriamento câmara, limpeza automática, cocção noturna.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Mono 220V</span> (6 bandejas)<br/><span class="pill pill-red">Trifásico 220V</span> (maiores). Também a gás.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 34.800</span> (com higienização, promoção)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Cartão PJ até <strong>35x</strong> · Proer · BNDES · Leasing.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">25 meses</span>. Fábrica em Porto Alegre, filiais em BA e SP.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span><div class="blips-text">"Não conheço, eles fazem fornos também?"</div><div class="blips-source">— Representante Prática</div></div>
+</div>
+
+<div class="card" data-cat="forno" data-name="rational">
+  <div class="card-header"><div class="card-title">Rational</div><span class="cat-tag cat-forno">Forno Combinado Premium</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Aqui é a marca número um do mundo. Quando você pensa em qualidade e tecnologia e o que é de melhor no mercado é Rational." Líder mundial em 120 países. Modelo iX com microondas integrado.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado de alto desempenho. Modelos 6, 10+ bandejas. Modelo iX (lançamento na feira): microondas integrado como acelerador — cozinha, grelha, frita + microondas. Sonda de temperatura para controle preciso do ponto de carnes. Sem boiler. Líder mundial, 120+ países.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">~R$ 99.000</span> (10 bandejas)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Parceiros em Uberlândia para demonstração. Rep. também revende Prática para clientes sem orçamento.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Não disputa preço — posiciona Blips como inferior</span><div class="blips-text">"Se você começar a ir para Wictory, Venancio, aí você vai ter dor de cabeça. Se quiser o melhor do mercado é esse forno aqui, se quiser o custo benefício vai na Prática, eu não disputo preço com eles."</div><div class="blips-source">— Representante Rational</div></div>
+</div>
+
+<div class="card" data-cat="forno" data-name="venâncio venancio">
+  <div class="card-header"><div class="card-title">Venâncio</div><span class="cat-tag cat-forno">Forno Combinado</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional (exceto vidro e motor). USB para importar receitas. Autolimpeza. Sem boiler — "Não faz sentido. Não faz mesmo." Preço competitivo (R$ 35k vs R$ 99k da Rational).</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado, 10 bandejas. Autolimpeza, programação de receitas, USB. Fabricação nacional (exceto vidro e motor). Sem boiler. Atenção: vende apenas para revendedores — não vende para consumidor final.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 35.000</span> (10 bandejas). Apenas para revendedores.</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">N/A — não atende consumidor final.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+</div>
+
+<div class="card" data-cat="forno" data-name="wictory victory">
+  <div class="card-header"><div class="card-title">Wictory (Victory)</div><span class="cat-tag cat-forno">Forno Pizza + Combinado</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Você consegue trabalhar com forno muito mais compacto, com uma produtividade alta igual e sem emitir tanta caloria." Cocção noturna: produto pronto quando o cozinheiro chega. 100% nacional.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Pizza câmara compacta ("canhão"): massa crua em 3 minutos a 400°C. Duas resistências. Combinado: modelos 5, 8, 11, 20 bandejas. Digital padrão ou digital programável (receitas salvas, pen drive, sistema Victory para computador). Funções: vapor, cocção, banho-maria, regeneração, resfriamento câmara, limpeza automática, cocção noturna. Sonda de temperatura. 100% nacional. Sem boiler.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value">Pizza: <span class="pill pill-green">220V — "Não precisa de trifásico."</span><br/>Combinado: mono ou trifásico (220 ou 380V)</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 5.274</span> (pizza WP35) · <span class="pill pill-yellow">R$ 9.160</span> (WP50/100)<br/><span class="pill pill-yellow">R$ 21.700-22.860</span> (combinado 5 band.) · <span class="pill pill-red">R$ 26-27k</span> (programável)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x sem juros (feira) · Pix: 5% desconto · Acima de 6x: +3% (até 10x) · Sem financiamento.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. 100% nacional — reposição de peças fácil.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
+</div>
+
+<!-- ═══ GELO ═══ -->
+<div class="section-divider" data-sec="gelo"><span class="sd-title">🧊 Máquinas de Gelo</span><div class="sd-line"></div><span class="sd-count" id="cnt-gelo"></span></div>
+
+<div class="card" data-cat="gelo" data-name="easy ice">
+  <div class="card-header"><div class="card-title">Easy Ice</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Aluguel não quer se preocupar com manutenção preventiva, corretiva, nada disso." Custo de 65 centavos/kg produzido vs R$ 6 no saco de 5 kg comprado fora.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Modelo IM65: 55 kg/24h, recomendado 20-40 kg de uso. Gelo em cubo quadrado (derrete mais lento). Depósito com sensor — ao retirar gelo, retoma produção em 30 min (1 ciclo). Modelo menor disponível. Requer ponto de água e dreno no piso ou até 10 cm na parede, por gravidade.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V Monofásico</span><br/>Tomada de 20A. Não precisa de trifásico.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill">Aluguel R$ 689/mês</span> (36 meses)<br/>Modelo menor: R$ 570/mês · <span class="pill pill-yellow">Compra: R$ 17-19k</span></div></div>
+    <div class="field full"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Locação mínimo 12 meses (manutenção inclusa). Se der problema empresa resolve e cliente compra gelo fora e manda nota para reembolso. Compra à vista.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">3 anos</span> (compra — Macon/OXAC). Rep. alertou sobre dificuldade real com peças: "Eu mandei um vídeo para ele dia 29 de abril. Desesperado por conta de peça."</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+</div>
+
+<div class="card" data-cat="gelo" data-name="everest">
+  <div class="card-header"><div class="card-title">Everest</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Durabilidade comprovada pelo próprio representante: "Eu tenho um já faz 14 [anos]." Produto robusto com preço competitivo na feira + frete grátis.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">50 kg/24h. Depósito interno de 6 kg — para quando enche, volta a produzir conforme o gelo é retirado. Recomendado ligar 2h antes do expediente. Gelo dura 24h no depósito.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 7.990</span> à vista (feira) · <span class="pill pill-yellow">R$ 880 × 10</span><br/>Fora da feira: R$ 9.990</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Máximo 10x no cartão. Frete grátis para qualquer estado fechando até o dia seguinte.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">6 meses</span> normal · <span class="pill pill-green">1 ano</span> na feira. AT em todos os estados.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
+</div>
+
+<div class="card" data-cat="gelo" data-name="zero grau">
+  <div class="card-header"><div class="card-title">Zero Grau</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Gelo em cubo quadrado para drinks: "vai derreter mais lento e não vai ficar tão aguada a bebida do cliente." Preços já com 28% de desconto de feira.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de gelo cubo quadrado (importadas). Modelo 660 (padrão) e 680 (maior, para gelo público). Cubo quadrado derrete mais lento que o cilíndrico — ideal para drinks.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">Trifásico 320V</span><br/>"No pegou na tomada" — não é tomada comum.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 15.000</span> (modelo 660) · <span class="pill pill-yellow">R$ 20.000</span> (modelo 680)<br/>Preços já com 28% desconto de feira.</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Cartão: até 12x (com taxa) · Boleto: até 8x · Sem desconto adicional à vista.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Produto importado.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
+</div>
+
+<!-- ═══ SORVETE ═══ -->
+<div class="section-divider" data-sec="sorvete"><span class="sd-title">🍦 Sorvete Soft</span><div class="sd-line"></div><span class="sd-count" id="cnt-sorvete"></span></div>
+
 <div class="card" data-cat="sorvete" data-name="logrosoft">
   <div class="card-header"><div class="card-title">Logrosoft</div><span class="cat-tag cat-sorvete">Sorvete Soft</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">ROI rápido e especialização: "Dividido por 24 dias, você vai ter que vender R$ 46 para pagar a máquina. R$ 46 é três milkshake." — "A Logrosoft você for é só máquina de sorvete."</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">ROI rápido e especialização: "Dividido por 24 dias, você vai ter que vender R$ 46 para pagar a máquina. R$ 46 é três milkshake." — "A Logrosoft você for é só máquina de sorvete."</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de sorvete soft de bancada e piso, 1 ou 2 bicos. Conservação noturna disponível (não recomendada como padrão). Serve açaí — recomendação: usar a mesma base nos dois bicos. Treinamento online incluso. Kit de borracha reserva enviado na compra.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">A partir R$ 1.490</span> (1 bico)<br/><span class="pill pill-yellow">R$ 17.990</span> (2 bicos)<br/><span class="pill pill-red">R$ 22.490</span> (com rodinhas)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Até 16x sem juros sem entrada (cartão, feira) · Boleto: 40% entrada + 12x · Sem aluguel · Aceita recompra de máquinas usadas.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">1 ano</span>. AT em todo o Brasil. Técnico vai ao local se necessário. Kit borracha reserva incluso na compra.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de sorvete soft de bancada e piso, 1 ou 2 bicos. Conservação noturna disponível (não recomendada como padrão). Serve açaí — recomendação: usar a mesma base nos dois bicos. Treinamento online incluso. Kit de borracha reserva enviado na compra.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">A partir R$ 1.490</span> (1 bico) · <span class="pill pill-yellow">R$ 17.990</span> (2 bicos) · <span class="pill pill-red">R$ 22.490</span> (com rodinhas)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Até 16x sem juros sem entrada (cartão, feira) · Boleto: 40% entrada + 12x · Sem aluguel · Aceita recompra de máquinas usadas.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">1 ano</span>. AT em todo o Brasil. Técnico vai ao local se necessário. Kit borracha reserva incluso na compra.</div></div>
   </div>
   <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Crítica — Marca nova e generalista demais</span>
     <div class="blips-text">"Eu conheço a Vuze, a Blips, porém todo mundo que eu vejo, por ele ser uma marca nova agora, eles pegaram máquina de suco de laranja, pegaram tudo, quer abraçar tudo e não vai. A Logrosoft você for é só máquina de sorvete. Você nunca vai ver uma máquina deles em Franquia — a Jah usa a nossa máquina, nós entregamos qualidade para franquias."</div>
@@ -262,299 +337,203 @@
   </div>
 </div>
 
-<!-- METALCUBAS -->
+<div class="card" data-cat="sorvete" data-name="middleby mirobi">
+  <div class="card-header"><div class="card-title">Middleby</div><span class="cat-tag cat-sorvete">Sorvete Soft</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Alta lucratividade: "100 clientes compram uma casquinha de R$ 5 = R$ 500/dia = R$ 10.000/mês só de sorvete." Bomba de ar incorpora até 70% de overrun, aumentando a rentabilidade por litro.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas Mirobi (sul-coreanas/chinesas). Modelo balcão (sem bomba): 300 casquinhas/hora; maior: 500/hora. Cuba refrigerada, sorvete líquido (bag ou pó). Bomba de ar: até 70% de overrun. Capacidade de 16 casquinhas contínuas. Lavagem: esvazia, água limpa, água com cloro. Modo standby disponível (não recomendado para base leite). "Coreano e chinês, meu amigo, os caras são ninja."</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Monofásico 220V</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 70.000</span> (soft sem bomba de ar)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+</div>
+
+<!-- ═══ FRITADEIRAS ═══ -->
+<div class="section-divider" data-sec="fritadeira"><span class="sd-title">🍟 Fritadeiras Elétricas</span><div class="sd-line"></div><span class="sd-count" id="cnt-fritadeira"></span></div>
+
 <div class="card" data-cat="fritadeira" data-name="metalcubas">
   <div class="card-header"><div class="card-title">Metalcubas</div><span class="cat-tag cat-fritadeira">Fritadeira Elétrica</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Elétrica e eficiência — a retomada dela é muito melhor do que a gás." Sem gás na cozinha elimina complicações com bombeiro e reduz custo operacional.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Elétrica e eficiência — a retomada dela é muito melhor do que a gás." Sem gás na cozinha elimina complicações com bombeiro e reduz custo operacional.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeiras elétricas água e óleo (zona fria). Modelo de 3 cubas com 8.000W. Disponível elétrico e gás — rep. recomendou elétrico pela eficiência e retomada de temperatura superior ao gás.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">Bifásico</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 4.710</span> (3 cubas)<br/><span class="pill pill-yellow">R$ 6.339</span> (modelo maior)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros no cartão.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">6 meses</span>. Manutenção disponível em todo o Brasil.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeiras elétricas água e óleo (zona fria). Modelo de 3 cubas com 8.000W. Disponível elétrico e gás — rep. recomendou elétrico pela eficiência e retomada de temperatura superior ao gás.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">Bifásico</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 4.710</span> (3 cubas) · <span class="pill pill-yellow">R$ 6.339</span> (maior)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros no cartão.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">6 meses</span>. Manutenção disponível em todo o Brasil.</div></div>
   </div>
   <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
 </div>
 
-<!-- MIDDLEBY / MIROBI -->
-<div class="card" data-cat="sorvete" data-name="middleby mirobi">
-  <div class="card-header"><div class="card-title">Middleby / Mirobi</div><span class="cat-tag cat-sorvete">Sorvete Soft</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Alta lucratividade: "100 clientes compram uma casquinha de R$ 5 = R$ 500/dia = R$ 10.000/mês só de sorvete." Bomba de ar incorpora até 70% de overrun, aumentando a rentabilidade por litro.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas Mirobi (sul-coreanas/chinesas). Modelo balcão (sem bomba): 300 casquinhas/hora; maior: 500/hora. Cuba refrigerada, sorvete líquido (bag ou pó). Bomba de ar: até 70% de overrun. Capacidade de 16 casquinhas contínuas. Lavagem: esvazia, água limpa, água com cloro. Modo standby disponível (não recomendado para base leite). "Coreano e chinês, meu amigo, os caras são ninja."</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Monofásico 220V</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 70.000</span> (soft sem bomba de ar)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
-</div>
-
-<!-- MULTIFRITAS -->
 <div class="card" data-cat="fritadeira" data-name="multifritas">
   <div class="card-header"><div class="card-title">Multifritas</div><span class="cat-tag cat-fritadeira">Fritadeira Elétrica</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Cubas 100% independentes com touch screen: cada cuba faz um produto diferente sem misturar sabores, e pode ficar desligada quando não usada. 5.000W por cuba para alta capacidade.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Cubas 100% independentes com touch screen: cada cuba faz um produto diferente sem misturar sabores, e pode ficar desligada quando não usada. 5.000W por cuba para alta capacidade.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeiras elétricas com touch screen. Modelos de 1 a 4 cubas independentes. 8L de óleo e 5.000W por cuba. Até 200°C, opera em 175-179°C. Aquecimento em 15 min. Até 15 kg de batata por cesto.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V</span><br/>Cabo 6mm recomendado. Independente por cuba.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 11.459</span> à vista -20% (1 cuba)<br/><span class="pill pill-yellow">R$ 14.300</span> em 10x<br/>2 cubas: R$ 8.504 em 10x</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Máximo 10x cartão · 5x com 7% desconto · À vista -20%.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
-</div>
-
-<!-- ORANGE XP -->
-<div class="card" data-cat="suco" data-name="orange xp orange express">
-  <div class="card-header"><div class="card-title">Orange Xp (Orange Express)</div><span class="cat-tag cat-suco">Suco de Laranja</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional (São Paulo): "manutenção, peça, de alguma coisa, a gente tá aqui." 2 anos de garantia — "o pessoal dá entre seis e..." Alta produtividade: 1L em 15 segundos = 240L/hora.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de suco automáticas, fabricação nacional. Lâmina corta a laranja; casca cai para gaveta; suco filtrado por peneira. Modelo de bancada embutível em granito/aço. Modelo completo com armazenamento e rodinhas. 1L em 15 segundos = 240L/hora.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V Monofásico</span><br/>"220 normal. Tem que ter uma tomadinha lá."</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 2.900</span> (bancada)<br/><span class="pill pill-yellow">A partir R$ 29.000</span> (produção)<br/>R$ 30.000 (modelo principal, até 10% desconto)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">12x sem juros cartão · BNDES · Financiamento · Boleto · Locação (caso a caso por distância).</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span>. Pronta entrega. "É muito difícil dar o problema."</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-positive">Reconhece proximidade como vantagem</span><div class="blips-text">"Ah, é melhor para você no caso, né?"</div><div class="blips-source">— Representante Orange Xp, ao saber que o cliente era de Uberlândia</div></div>
-</div>
-
-<!-- PIETRO -->
-<div class="card" data-cat="forno" data-name="pietro">
-  <div class="card-header"><div class="card-title">Pietro</div><span class="cat-tag cat-forno">Forno de Pizza (Câmara)</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Dois anos de garantia, manutenção de 2 a 12 horas nível Brasil, sábado, domingo, feriado." 50 pizzas/hora. Fabricação nacional com técnico enviado para instalação.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Forno de câmara (não esteira), modelo 37/70: pizzas até 35 cm, 50 pizzas/hora. Convecção a ar. Não tem forno combinado. Fabricação nacional. Instalação por técnico enviado pela empresa.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V Bifásico</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 22.000</span> à vista<br/><span class="pill pill-yellow">R$ 25.000</span> em 10x</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x no cartão · Menz · Banco do Nordeste · Carta de crédito · Sem financiamento interno.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span>. Manutenção 2-12h nacional (sáb, dom, feriados).</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Conhecimento superficial</span><div class="blips-text">"É uma empresa nacional né? Não conheço."</div><div class="blips-source">— Representante Pietro</div></div>
-</div>
-
-<!-- PRÁTICA -->
-<div class="card" data-cat="forno" data-name="prática pratica">
-  <div class="card-header"><div class="card-title">Prática</div><span class="cat-tag cat-forno">Forno Combinado + Pizza</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Se você der uma pesquisada, falar com bastante gente, vai ter unanimidade: Prática." Sem boiler (sem calcificação), higienização automática, filtro catalítico (sem fumaça próximo ao salão), maior rede de AT nacional.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Pizza câmara: 1,5 min (pré-assada) ou 3 min (massa crua). Dois fornos empilhados. Filtro catalítico — sem fumaça, pode ficar próximo ao salão. Forno combinado sem boiler (tecnologia patenteada): água entra vaporizada diretamente, sem acúmulo de calcário. Funções: vapor, cocção, banho-maria, regeneração, resfriamento câmara, limpeza automática, cocção noturna.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Mono 220V</span> (6 bandejas)<br/><span class="pill pill-red">Trifásico 220V</span> (maiores)<br/>Disponível também a gás.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 34.800</span> (com higienização, promoção)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Cartão PJ até <strong>35x</strong> · Proer · BNDES · Leasing.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">25 meses</span>. Fábrica em Porto Alegre, filiais em BA e SP.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Questiona se é fabricante</span><div class="blips-text">"Não conheço, eles fazem fornos também?"</div><div class="blips-source">— Representante Prática</div></div>
-</div>
-
-<!-- PRIX (TOLEDO) -->
-<div class="card" data-cat="seladora" data-name="prix toledo">
-  <div class="card-header"><div class="card-title">Prix (Toledo)</div><span class="cat-tag cat-seladora">Seladora a Vácuo</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional. 2 anos de garantia na bomba. ROI em 6-8 meses pela redução de mão de obra manual.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Seladoras câmpana. Modelos 42B (bomba nacional — 2 anos), 42B Plus (bomba Bush — 1 ano), 52B, 61B. Toledo testou e constatou que a bomba nacional aguenta mais que a importada. Barra dupla: 6 hambúrguers por selagem. Pronta entrega da fábrica em São Bernardo. Formadora de hambúrguers com gramatura regulável.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 14.500</span> (42B)<br/><span class="pill pill-yellow">R$ 15.900</span> (42B Plus)<br/><span class="pill pill-red">R$ 18.760</span> (61B)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x cartão (feira) · Boleto disponível · Finame · Leasing · Financiamento bancário.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span> bomba nacional · <span class="pill pill-yellow">1 ano</span> bomba importada · AT em todo o Brasil.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Concorrente com preço acima na região</span><div class="blips-text">"Sim, sim. É concorrente nosso. Faz parte."</div><div class="blips-source">— Representante Prix (Toledo)</div></div>
-</div>
-
-<!-- R BAIÃO -->
-<div class="card" data-cat="seladora" data-name="r baião rba">
-  <div class="card-header"><div class="card-title">R Baião (RBA)</div><span class="cat-tag cat-seladora">Seladora a Vácuo</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Fabricação nacional hoje na América Latina só RBA. 100% nacional só RBA." Orímetro exclusivo — "ninguém no Brasil tem orímetro": avisa automaticamente a hora de trocar o óleo. Bomba própria RBA com 3 anos de garantia. Maior parcelamento: 18x.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Câmpana 100% nacional, fabricadas em Ubá (MG). Modelos 420, 520, 620. Bomba Bush (padrão) ou bomba RBA interna (cópia da Bush, ~5s mais rápida, 3 anos de garantia). Cuba arredondada aço 304. Tampa de fibra de vidro ("impossível quebrar"). Painel digital com orímetro exclusivo. Capacidade: 4 hambúrguers/30s = 480/hora.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 17.590</span> (420)<br/><span class="pill pill-yellow">R$ 19.690</span> (520)<br/><span class="pill pill-red">R$ 25.890</span> (620)<br/>À vista: até 8% desconto · Frete grátis</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Até <strong>18x</strong> no cartão · Frete grátis · Pronta entrega (até 10 dias).</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span> padrão · <span class="pill pill-green">3 anos</span> na bomba RBA · AT em Uberlândia e Uberaba.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Desqualifica como importada</span><div class="blips-text">"Blips, né? São também máquinas importadas. É, fabricação nacional hoje na América Latina só RBA. 100% nacional só RBA."</div><div class="blips-source">— Representante R Baião (RBA)</div></div>
-</div>
-
-<!-- RATIONAL -->
-<div class="card" data-cat="forno" data-name="rational">
-  <div class="card-header"><div class="card-title">Rational</div><span class="cat-tag cat-forno">Forno Combinado Premium</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Aqui é a marca número um do mundo. Quando você pensa em qualidade e tecnologia e o que é de melhor no mercado é Rational." Líder mundial em 120 países. Modelo iX com microondas integrado. A Ferrari do segmento.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado de alto desempenho. Modelos 6, 10+ bandejas. Modelo iX (lançamento na feira): microondas integrado como acelerador — cozinha, grelha, frita + microondas. Sonda de temperatura para controle preciso do ponto de carnes. Sem boiler. Líder mundial, 120+ países.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">~R$ 99.000</span> (10 bandejas)<br/>"Eu não vou conseguir chegar no preço deles."</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Parceiros em Uberlândia para demonstração. Rep. também revende Prática para clientes sem orçamento para a Rational.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Não disputa preço — posiciona Blips como inferior</span><div class="blips-text">"Se você começar a ir para Wictory, Venancio, aí você vai ter dor de cabeça. Se quiser o melhor do mercado é esse forno aqui, se quiser o custo benefício vai na Prática, eu não disputo preço com eles."</div><div class="blips-source">— Representante Rational</div></div>
-</div>
-
-<!-- VENÂNCIO -->
-<div class="card" data-cat="forno" data-name="venâncio venancio">
-  <div class="card-header"><div class="card-title">Venâncio</div><span class="cat-tag cat-forno">Forno Combinado</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional (exceto vidro e motor). USB para importar receitas. Autolimpeza. Sem boiler — "Não faz sentido. Não faz mesmo." Preço competitivo (R$ 35k vs R$ 99k da Rational).</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Forno combinado, 10 bandejas. Autolimpeza, programação de receitas, USB. Fabricação nacional (exceto vidro e motor). Sem boiler. Atenção: vende apenas para revendedores — não vende para consumidor final.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 35.000</span> (10 bandejas)<br/>Apenas para revendedores.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">N/A — não atende consumidor final.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeiras elétricas com touch screen. Modelos de 1 a 4 cubas independentes. 8L de óleo e 5.000W por cuba. Até 200°C, opera em 175-179°C. Aquecimento em 15 min. Até 15 kg de batata por cesto.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-yellow">220V</span>. Cabo 6mm recomendado. Independente por cuba.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 11.459</span> à vista -20% (1 cuba) · <span class="pill pill-yellow">R$ 14.300</span> em 10x<br/>2 cubas: R$ 8.504 em 10x</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Máximo 10x cartão · 5x com 7% desconto · À vista -20%.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value missing">Não especificadas nesta visita.</div></div>
   </div>
   <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
 </div>
 
-<!-- VULCAN -->
 <div class="card" data-cat="fritadeira" data-name="vulcan">
   <div class="card-header"><div class="card-title">Vulcan</div><span class="cat-tag cat-fritadeira">Fritadeira Elétrica</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"A Vulcan no mercado ela é referência opção de alimentos." Zona fria prolonga vida do óleo. Resistências leváveis para limpeza higiênica. Temporizador integrado.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"A Vulcan no mercado ela é referência opção de alimentos." Zona fria prolonga vida do óleo. Resistências leváveis para limpeza higiênica. Temporizador integrado.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeira elétrica com zona fria (puxa sujeira do óleo, prolongando sua vida útil). Resistências leváveis para limpeza higiênica. Temporizador — apita quando a fritura termina.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">Trifásico 220V</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 10.000</span> à vista<br/><span class="pill">R$ 11.570</span> em 10x</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros no cartão (feira).</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Credenciado em Uberlândia.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Fritadeira elétrica com zona fria (puxa sujeira do óleo, prolongando sua vida útil). Resistências leváveis para limpeza higiênica. Temporizador — apita quando a fritura termina.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">Trifásico 220V</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 10.000</span> à vista · <span class="pill">R$ 11.570</span> em 10x</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros no cartão (feira).</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Credenciado em Uberlândia.</div></div>
   </div>
   <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span><div class="blips-text">"É, é porque eu não conheço eles também, né?"</div><div class="blips-source">— Representante Vulcan</div></div>
 </div>
 
-<!-- HOBART -->
-<div class="card" data-cat="lavalouca" data-name="hobart">
-  <div class="card-header"><div class="card-title">Hobart</div><span class="cat-tag cat-lavalouca">Lava-louça Industrial</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Termodesinfecção a 80°C sem necessidade de álcool. Braços de inox (vs plástico da concorrência). Dosadores integrados na máquina (economia de insumo). Locação disponível com manutenção inclusa.</div></div>
+<!-- ═══ SELADORAS ═══ -->
+<div class="section-divider" data-sec="seladora"><span class="sd-title">📦 Seladoras a Vácuo</span><div class="sd-line"></div><span class="sd-count" id="cnt-seladora"></span></div>
+
+<div class="card" data-cat="seladora" data-name="prix toledo">
+  <div class="card-header"><div class="card-title">Prix (Toledo)</div><span class="cat-tag cat-seladora">Seladora a Vácuo</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional. 2 anos de garantia na bomba. ROI em 6-8 meses pela redução de mão de obra manual.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Lava-louça Ecomax 503/403: ciclos de 1, 2 ou 3 minutos. Lava a 80°C / enxágue a 60°C (termodesinfecção — sem bactéria, sem álcool). 18 pratos/2,5 min; 120 taleres/2,5 min; 36 copos/1,5 min. Capuz com mesas dos dois lados = 600 pratos/hora. Autolimpeza ao final do turno. Braços em inox. Dosadores integrados.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Mono, Bi ou Tri 220V</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">Ecomax 503: R$ 21.600</span><br/><span class="pill">Ecomax 403: R$ 19.000</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros cartão (feira) · Locação via parceiro alemão (Minas): 36x R$ 1.675/mês + seguro anual R$ 350 + opção compra R$ 9.820.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Credenciado em Uberlândia. Plano de manutenção pós-garantia.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Seladoras câmpana. Modelos 42B (bomba nacional — 2 anos), 42B Plus (bomba Bush — 1 ano), 52B, 61B. Toledo testou e constatou que a bomba nacional aguenta mais que a importada. Barra dupla: 6 hambúrguers por selagem. Pronta entrega da fábrica em São Bernardo. Formadora de hambúrguers com gramatura regulável.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 14.500</span> (42B) · <span class="pill pill-yellow">R$ 15.900</span> (42B Plus)<br/><span class="pill pill-yellow">R$ 15.700</span> (52B) · <span class="pill pill-red">R$ 18.760</span> (61B)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x cartão (feira) · Boleto disponível · Finame · Leasing · Financiamento bancário.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span> bomba nacional · <span class="pill pill-yellow">1 ano</span> bomba importada · AT em todo o Brasil.</div></div>
   </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Reconhece como concorrente</span><div class="blips-text">"Sim, sim. É concorrente nosso. Faz parte."</div><div class="blips-source">— Representante Prix (Toledo)</div></div>
 </div>
 
-<!-- WICTORY -->
-<div class="card" data-cat="forno" data-name="wictory victory">
-  <div class="card-header"><div class="card-title">Wictory (Victory)</div><span class="cat-tag cat-forno">Forno Pizza + Combinado</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">"Você consegue trabalhar com forno muito mais compacto, com uma produtividade alta igual e sem emitir tanta caloria." Forno de pizza câmara entrega produtividade de esteira, com menos custo e menos espaço. Cocção noturna: produto pronto quando o cozinheiro chega. 100% nacional.</div></div>
+<div class="card" data-cat="seladora" data-name="r baião rba">
+  <div class="card-header"><div class="card-title">R Baião (RBA)</div><span class="cat-tag cat-seladora">Seladora a Vácuo</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">"Fabricação nacional hoje na América Latina só RBA. 100% nacional só RBA." Orímetro exclusivo — "ninguém no Brasil tem orímetro": avisa automaticamente a hora de trocar o óleo. Bomba própria RBA com 3 anos de garantia. Maior parcelamento: 18x.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Pizza câmara compacta ("canhão"): massa crua em 3 minutos a 400°C. Duas resistências. Combinado: modelos 5, 8, 11, 20 bandejas. Digital padrão ou digital programável (receitas salvas, pen drive, sistema Victory para computador). Funções: vapor, cocção, banho-maria, regeneração, resfriamento câmara, limpeza automática, cocção noturna. Sonda de temperatura. 100% nacional. Sem boiler.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value">Pizza: <span class="pill pill-green">220V — "Não precisa de trifásico."</span><br/>Combinado: mono ou trifásico (220 ou 380V)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 5.274</span> (pizza WP35)<br/><span class="pill pill-yellow">R$ 9.160</span> (pizza WP50/100)<br/><span class="pill pill-yellow">R$ 21.700-22.860</span> (combinado 5 band.)<br/><span class="pill pill-red">R$ 26-27k</span> (programável)</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">6x sem juros (feira, válido até sexta) · Pix: 5% desconto · Acima de 6x: +3% (até 10x) · Sem financiamento.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. 100% nacional — reposição de peças fácil. "Pode ir sem erro. É uma empresa que te abraça."</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Câmpana 100% nacional, fabricadas em Ubá (MG). Modelos 420, 520, 620. Bomba Bush (padrão) ou bomba RBA interna (cópia da Bush, ~5s mais rápida, 3 anos de garantia). Cuba arredondada aço 304. Tampa de fibra de vidro ("impossível quebrar"). Painel digital com orímetro exclusivo. Capacidade: 4 hambúrguers/30s = 480/hora.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value missing">Não especificada nesta visita.</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 17.590</span> (420) · <span class="pill pill-yellow">R$ 19.690</span> (520) · <span class="pill pill-red">R$ 25.890</span> (620)<br/>À vista: até 8% desconto · Frete grátis</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Até <strong>18x</strong> no cartão · Frete grátis · Pronta entrega (até 10 dias).</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span> padrão · <span class="pill pill-green">3 anos</span> na bomba RBA · AT em Uberlândia e Uberaba.</div></div>
   </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Desqualifica como importada</span><div class="blips-text">"Blips, né? São também máquinas importadas. É, fabricação nacional hoje na América Latina só RBA. 100% nacional só RBA."</div><div class="blips-source">— Representante R Baião (RBA)</div></div>
 </div>
 
-<!-- WINTERHALTER -->
-<div class="card" data-cat="lavalouca" data-name="winterhalter">
-  <div class="card-header"><div class="card-title">Winterhalter</div><span class="cat-tag cat-lavalouca">Lava-louça Industrial</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">80 anos especializada exclusivamente em lava-louças. Termodesinfecção a 80°C sem pré-lavagem (filtros triplos). Dosadores integrados para economia real de insumo. Escalabilidade: da pequena ao túnel de 7.000 pratos/hora.</div></div>
+<!-- ═══ SUCO ═══ -->
+<div class="section-divider" data-sec="suco"><span class="sd-title">🍊 Máquinas de Suco</span><div class="sd-line"></div><span class="sd-count" id="cnt-suco"></span></div>
+
+<div class="card" data-cat="suco" data-name="orange xp orange express">
+  <div class="card-header"><div class="card-title">Orange Xp (Orange Express)</div><span class="cat-tag cat-suco">Suco de Laranja</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Fabricação 100% nacional (São Paulo): "manutenção, peça, de alguma coisa, a gente tá aqui." 2 anos de garantia. Alta produtividade: 1L em 15 segundos = 240L/hora.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Lava-louça de capuz (rack). UC50: 18 pratos/2,5 min; 120 taleres/2,5 min; 36 copos/1,5 min. Lava 80°C / enxágue 60°C (termodesinfecção). Tanque de 20L. Filtros triplos (sem pré-lavagem). Autolimpeza ao final do turno. Dosadores integrados. Modelos maiores: capuz = 600 pratos/hora; túneis 3.000-7.000/hora.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V</span><br/>"Funciona no mono, no bi e no tri."</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 45.000</span> (tabela)<br/><span class="pill pill-yellow">R$ 32.900</span> em 12x (feira, -20%)<br/><span class="pill pill-green">R$ 30.854</span> à vista</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">12x sem juros cartão (feira) · Boleto: 30% entrada + parcelas · Locação 12-72 meses via Gren (Minas): 36x R$ 1.675/mês + seguro anual ~R$ 350 + opção compra R$ 9.820.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value">Equipe em Uberlândia. Plano de manutenção pós-garantia: seguro anual ~R$ 350.</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de suco automáticas, fabricação nacional. Lâmina corta a laranja; casca cai para gaveta; suco filtrado por peneira. Modelo de bancada embutível em granito/aço. Modelo completo com armazenamento e rodinhas. 1L em 15 segundos = 240L/hora.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V Monofásico</span><br/>"220 normal. Tem que ter uma tomadinha lá."</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-green">R$ 2.900</span> (bancada) · <span class="pill pill-yellow">A partir R$ 29.000</span> (produção)<br/>R$ 30.000 (modelo principal, até 10% desconto)</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">12x sem juros cartão · BNDES · Financiamento · Boleto · Locação (caso a caso por distância).</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-green">2 anos</span>. Pronta entrega. "É muito difícil dar o problema."</div></div>
   </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span>
-  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-positive">Reconhece proximidade como vantagem</span><div class="blips-text">"Ah, é melhor para você no caso, né?"</div><div class="blips-source">— Representante Orange Xp, ao saber que o cliente era de Uberlândia</div></div>
 </div>
 
-<!-- ZERO GRAU -->
-<div class="card" data-cat="gelo" data-name="zero grau">
-  <div class="card-header"><div class="card-title">Zero Grau</div><span class="cat-tag cat-gelo">Máquina de Gelo</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Gelo em cubo quadrado para drinks: "vai derreter mais lento e não vai ficar tão aguada a bebida do cliente." Preços já com 28% de desconto de feira.</div></div>
-  <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Máquinas de gelo cubo quadrado (importadas). Modelo 660 (padrão) e 680 (maior, para gelo público). Cubo quadrado derrete mais lento que o cilíndrico — ideal para drinks.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-red">Trifásico 320V</span><br/>"No pegou na tomada" — não é tomada comum.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">R$ 15.000</span> (modelo 660)<br/><span class="pill pill-yellow">R$ 20.000</span> (modelo 680)<br/>Preços já com 28% desconto de feira.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Cartão: até 12x (com taxa) · Boleto: até 8x · Sem desconto adicional à vista.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Produto importado.</div></div>
-  </div>
-  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não mencionada</span></div>
-</div>
-
-<!-- ZUMO -->
-<div class="card" data-cat="suco" data-name="zumo">
+<div class="card" data-cat="suco" data-name="zummo zumo">
   <div class="card-header"><div class="card-title">Zummo</div><span class="cat-tag cat-suco">Suco de Laranja</span></div>
-  <div class="value-prop"><div class="value-prop-label">&#x2B50; Proposta de Valor Principal</div><div class="value-prop-text">Processo EVS patenteado: sem contato com casca (sem acidez extra), sem bagaço e sem caroço (sem amargor). Suco com validade de até 5 dias vs meia hora dos concorrentes. Locação com manutenção e peça inclusos, primeira parcela após 30 dias.</div></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Processo EVS patenteado: sem contato com casca (sem acidez extra), sem bagaço e sem caroço (sem amargor). Suco com validade de até 5 dias vs meia hora dos concorrentes. Locação com manutenção e peça inclusos, primeira parcela após 30 dias.</div></div>
   <div class="fields">
-    <div class="field full"><div class="field-icon">&#x2699;&#xFE0F;</div><div class="field-label">Funcionamento</div><div class="field-value">Extração Vertical patenteada (EVS), empresa espanhola. Sem contato com casca = sem acidez. Sem bagaço/caroço = sem amargor. Validade: até 5 dias. Linha 16: rampa automática para 10 laranjas, ~96L/hora. Modelo com cesto giratório automático. Modelo top: 3 frutas por vez, 210L/hora. Interior inox 304, chassi inox, correia dentada, molas de inox.</div></div>
-    <div class="field"><div class="field-icon">&#x26A1;</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Monofásico 220V</span></div></div>
-    <div class="field"><div class="field-icon">&#x1F4B0;</div><div class="field-label">Preço</div><div class="field-value">Z06 Nature — R$ 47.990 à vista.</div></div>
-    <div class="field"><div class="field-icon">&#x1F4B3;</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Venda: até 18x cartão · Boleto disponível · Locação: 12 parcelas = preço à vista + manutenção e peça inclusos. Última parcela = opção de compra. <strong>Primeira parcela só após 30 dias.</strong> Locação até 48 meses — 48 parcelas de R$ 1.449,00.</div></div>
-    <div class="field full"><div class="field-icon">&#x1F6E1;&#xFE0F;</div><div class="field-label">Garantias</div><div class="field-value">Manutenção e peça inclusa durante contrato de locação. "A gente tem assistência técnica autorizada na região, a gente vende e tem todo o pós-venda bem pertinho de lá."</div></div>
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Extração Vertical patenteada (EVS), empresa espanhola. Sem contato com casca = sem acidez. Sem bagaço/caroço = sem amargor. Validade: até 5 dias. Linha 16: rampa automática para 10 laranjas, ~96L/hora. Modelo com cesto giratório automático. Modelo top: 3 frutas por vez, 210L/hora. Interior inox 304, chassi inox, correia dentada, molas de inox.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Monofásico 220V</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value">Z06 Nature — <span class="pill pill-red">R$ 47.990</span> à vista.</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">Venda: até 18x cartão · Boleto disponível · Locação: 12 parcelas = preço à vista + manutenção e peça inclusos. Última parcela = opção de compra. <strong>Primeira parcela só após 30 dias.</strong> Locação até 48 meses — 48 parcelas de R$ 1.449,00.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value">Manutenção e peça inclusa durante contrato de locação. Assistência técnica autorizada na região de Uberlândia.</div></div>
   </div>
-  <div class="blips-section">
-    <div class="blips-header">Percepção sobre a Blips</div>
-    <span class="blips-chip blips-negative">Acusa de cópia + direciona ao Reclame Aqui + critica material</span>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-negative">Acusa de cópia + direciona ao Reclame Aqui + critica material</span>
     <div class="blips-text">
       <strong>1. Encaminha para o Reclame Aqui:</strong> "A Orange ela faz o sistema rotacional, né, conforme eu te falei. E esta Blips aqui eu prefiro que depois você olhe o Reclame Aqui."<br><br>
-      <strong>2. Acusa de ser cópia do sistema EVS:</strong> "Eles usam o nosso sistema dizendo que é o mesmo nosso, e na verdade isto aqui é uma cópia da primeira máquina Zumo do Brasil [espanhola]. Antes de patentear. Esta primeira máquina não tinha patente, por isso que eles patentearam."<br><br>
-      <strong>3. Critica a qualidade do material:</strong> "É tudo produto bem plastificado. É diferente." — Sobre o sistema de filtragem: "O nosso é a cesteira de silicone. A nossa máquina antiga da Zumo era vários elásticos para fazer esta peça. Então você vê como eles estão ainda muito cópia mesmo."<br><br>
+      <strong>2. Acusa de ser cópia do sistema EVS:</strong> "Eles usam o nosso sistema dizendo que é o mesmo nosso, e na verdade isto aqui é uma cópia da primeira máquina Zummo do Brasil [espanhola]. Antes de patentear. Esta primeira máquina não tinha patente, por isso que eles patentearam."<br><br>
+      <strong>3. Critica a qualidade do material:</strong> "É tudo produto bem plastificado. É diferente." — Sobre o sistema de filtragem: "O nosso é a cesteira de silicone. A nossa máquina antiga da Zummo era vários elásticos para fazer esta peça. Então você vê como eles estão ainda muito cópia mesmo."<br><br>
       <strong>4. Identifica a origem da empresa:</strong> "A Blips é a antiga Citros [Super Citros]. Eles acabaram fechando as portas e [reabriram]."
     </div>
     <div class="blips-source">— Representante Zummo</div>
   </div>
 </div>
 
-<div class="empty" id="empty" style="display:none;">Nenhuma empresa encontrada com esse filtro.</div>
+<!-- ═══ LAVA-LOUÇAS ═══ -->
+<div class="section-divider" data-sec="lavalouca"><span class="sd-title">🫧 Lava-louças Industriais</span><div class="sd-line"></div><span class="sd-count" id="cnt-lavalouca"></span></div>
+
+<div class="card" data-cat="lavalouca" data-name="hobart">
+  <div class="card-header"><div class="card-title">Hobart</div><span class="cat-tag cat-lavalouca">Lava-louça Industrial</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">Termodesinfecção a 80°C sem necessidade de álcool. Braços de inox (vs plástico da concorrência). Dosadores integrados na máquina (economia de insumo). Locação disponível com manutenção inclusa.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Lava-louça Ecomax 503/403: ciclos de 1, 2 ou 3 minutos. Lava a 80°C / enxágue a 60°C (termodesinfecção). 18 pratos/2,5 min; 120 taleres/2,5 min; 36 copos/1,5 min. Capuz com mesas dos dois lados = 600 pratos/hora. Autolimpeza ao final do turno. Braços em inox. Dosadores integrados.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">Mono, Bi ou Tri 220V</span></div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-yellow">Ecomax 503: R$ 21.600</span> · <span class="pill">Ecomax 403: R$ 19.000</span></div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">10x sem juros cartão (feira) · Locação via parceiro alemão (Minas): 36x R$ 1.675/mês + seguro anual R$ 350 + opção compra R$ 9.820.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value"><span class="pill pill-yellow">1 ano</span>. Credenciado em Uberlândia. Plano de manutenção pós-garantia.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+</div>
+
+<div class="card" data-cat="lavalouca" data-name="winterhalter">
+  <div class="card-header"><div class="card-title">Winterhalter</div><span class="cat-tag cat-lavalouca">Lava-louça Industrial</span></div>
+  <div class="value-prop"><div class="value-prop-label">⭐ Proposta de Valor Principal</div><div class="value-prop-text">80 anos especializada exclusivamente em lava-louças. Termodesinfecção a 80°C sem pré-lavagem (filtros triplos). Dosadores integrados para economia real de insumo. Escalabilidade: da pequena ao túnel de 7.000 pratos/hora.</div></div>
+  <div class="fields">
+    <div class="field full"><div class="field-icon">⚙️</div><div class="field-label">Funcionamento</div><div class="field-value">Lava-louça de capuz (rack). UC50: 18 pratos/2,5 min; 120 taleres/2,5 min; 36 copos/1,5 min. Lava 80°C / enxágue 60°C (termodesinfecção). Tanque de 20L. Filtros triplos (sem pré-lavagem). Autolimpeza ao final do turno. Dosadores integrados. Modelos maiores: capuz = 600 pratos/hora; túneis 3.000-7.000/hora.</div></div>
+    <div class="field"><div class="field-icon">⚡</div><div class="field-label">Ligação Elétrica</div><div class="field-value"><span class="pill pill-green">220V</span> — "Funciona no mono, no bi e no tri."</div></div>
+    <div class="field"><div class="field-icon">💰</div><div class="field-label">Preço</div><div class="field-value"><span class="pill pill-red">R$ 45.000</span> (tabela) · <span class="pill pill-yellow">R$ 32.900</span> em 12x (feira, -20%) · <span class="pill pill-green">R$ 30.854</span> à vista</div></div>
+    <div class="field"><div class="field-icon">💳</div><div class="field-label">Modelos de Pagamento</div><div class="field-value">12x sem juros cartão (feira) · Boleto: 30% entrada + parcelas · Locação 12-72 meses via Gren (Minas): 36x R$ 1.675/mês + seguro anual ~R$ 350 + opção compra R$ 9.820.</div></div>
+    <div class="field full"><div class="field-icon">🛡️</div><div class="field-label">Garantias</div><div class="field-value">Equipe em Uberlândia. Plano de manutenção pós-garantia: seguro anual ~R$ 350.</div></div>
+  </div>
+  <div class="blips-section"><div class="blips-header">Percepção sobre a Blips</div><span class="blips-chip blips-neutral">Não conhece</span></div>
+</div>
+
+<div class="empty" id="empty" style="display:none;">Nenhuma empresa encontrada.</div>
 </div>
 
 <script>
-  const SECTIONS = [
-    { cat: 'forno',       label: 'Fornos Combinados & Pizza' },
-    { cat: 'gelo',        label: 'Maquinas de Gelo' },
-    { cat: 'sorvete',     label: 'Sorvete Soft' },
-    { cat: 'fritadeira',  label: 'Fritadeiras Eletricas' },
-    { cat: 'seladora',    label: 'Seladoras a Vacuo' },
-    { cat: 'suco',        label: 'Maquinas de Suco' },
-    { cat: 'lavalouca',   label: 'Lava-loucas Industriais' },
-  ];
+  // Preenche contadores de empresas por categoria
+  ['forno','gelo','sorvete','fritadeira','seladora','suco','lavalouca'].forEach(function(cat) {
+    var n = document.querySelectorAll('.card[data-cat="' + cat + '"]').length;
+    var el = document.getElementById('cnt-' + cat);
+    if (el) el.textContent = n + (n === 1 ? ' empresa' : ' empresas');
+  });
 
-  const grid    = document.getElementById('grid');
-  const empty   = document.getElementById('empty');
-  const search  = document.getElementById('search');
-  const btns    = document.querySelectorAll('.filter-btn');
-  const allCards = [...grid.querySelectorAll('.card')];
+  function filtrar() {
+    var activoBtn = document.querySelector('.filter-btn.active');
+    var catFiltro = activoBtn ? activoBtn.getAttribute('data-cat') : 'all';
+    var visiveis = 0;
 
-  function buildGroups() {
-    allCards.forEach(c => c.remove());
-    grid.querySelectorAll('.section-header').forEach(el => el.remove());
-    SECTIONS.forEach(sec => {
-      const group = allCards.filter(c => c.dataset.cat === sec.cat);
-      if (!group.length) return;
-      const hdr = document.createElement('div');
-      hdr.className = 'section-header';
-      hdr.dataset.section = sec.cat;
-      hdr.innerHTML = '<span class="section-title">' + sec.label + '</span><div class="section-line"></div><span class="section-count">' + group.length + ' empresa' + (group.length > 1 ? 's' : '') + '</span>';
-      grid.insertBefore(hdr, empty);
-      group.forEach(c => grid.insertBefore(c, empty));
+    document.querySelectorAll('.card').forEach(function(card) {
+      var catCard = card.getAttribute('data-cat') || '';
+      var show = (catFiltro === 'all') || (catCard === catFiltro);
+      card.style.display = show ? '' : 'none';
+      if (show) visiveis++;
     });
-  }
-  buildGroups();
 
-  function update() {
-    const f = document.querySelector('.filter-btn.active').dataset.filter;
-    const q = search.value.toLowerCase().trim();
-    let visible = 0;
-    allCards.forEach(c => {
-      const show = (f === 'all' || c.dataset.cat === f) && (!q || c.dataset.name.includes(q) || c.innerText.toLowerCase().includes(q));
-      c.style.display = show ? '' : 'none';
-      if (show) visible++;
+    document.querySelectorAll('.section-divider').forEach(function(div) {
+      var sec = div.getAttribute('data-sec');
+      var temVisivel = false;
+      document.querySelectorAll('.card[data-cat="' + sec + '"]').forEach(function(c) {
+        if (c.style.display !== 'none') temVisivel = true;
+      });
+      div.style.display = temVisivel ? '' : 'none';
     });
-    grid.querySelectorAll('.section-header').forEach(hdr => {
-      const hasVisible = allCards.some(c => c.dataset.cat === hdr.dataset.section && c.style.display !== 'none');
-      hdr.style.display = hasVisible ? '' : 'none';
-    });
-    empty.style.display = visible === 0 ? 'block' : 'none';
+
+    document.getElementById('empty').style.display = visiveis === 0 ? 'block' : 'none';
   }
 
-  btns.forEach(b => b.addEventListener('click', function() {
-    btns.forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    update();
-  }));
-  search.addEventListener('input', update);
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.onclick = function() {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      filtrar();
+      var filterBar = document.querySelector('.filter-bar');
+      var grid = document.getElementById('grid');
+      var barH = filterBar ? filterBar.offsetHeight : 50;
+      var offset = grid.getBoundingClientRect().top + window.scrollY - barH - 12;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    };
+  });
 
 </script>
 </body>
